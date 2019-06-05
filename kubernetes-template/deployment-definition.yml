@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-deployment
+  labels:
+    app: mayapp
+    type: front-end
+spec:
+  template:
+    metadata:
+      name: myapp-pod
+      labels:
+        app: myapp
+        type: front-end
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx:1.12
+
+  replicas: 6
+
+  selector:
+    matchLabels:
+      app: myapp
+
+#  strategy:
+#    type: RollingUpdate
+#    rollingUpdate:
+#      maxSurge: 2        # how many pods we can add at a time
+#      maxUnavailable: 0  # how many pods can be unavailable during the rolling update
