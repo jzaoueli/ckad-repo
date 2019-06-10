@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  labels:
+    name: web-dashboard
+  name: web-dashboard
+#  namespace: default # default is standard
+spec:
+  replicas: 1
+#  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: web-dashboard
+#  strategy:
+#    rollingUpdate:
+#      maxSurge: 25%
+#      maxUnavailable: 25%
+#    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: web-dashboard
+    spec:
+      containers:
+        - image: kodekloud/my-kubernetes-dashboard
+          imagePullPolicy: Always
+          name: web-dashboard
+          ports:
+            - containerPort: 8080
+      serviceAccountName: dashboard-sa
