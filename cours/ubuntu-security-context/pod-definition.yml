@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-app
+spec:
+# security settings at POD-Level
+  securityContext:
+    runAsUser: 1000
+  containers:
+    - name: ubuntu
+      image: ubuntu
+      command: ["sleep","3600"]
+# security settings at Container-Level -> will override security settings at POD-Level
+      securityContext:
+        runAsUser: 1000
+        capabilities:
+          add:
+            - ["MAC_ADMIN"]
