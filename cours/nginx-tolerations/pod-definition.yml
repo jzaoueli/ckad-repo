@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+spec:
+  containers:
+    - name: myapp-pod
+      image: nginx
+  tolerations:
+    - key: "app"
+      operator: "EQUAL"
+      value: "blue"
+      effect: "NoSchedule"
+
+
+# this definition is for a node tainted as follows
+# kubectl taint node node2 app=blue:NoSchedule
