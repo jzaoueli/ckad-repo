@@ -5,6 +5,7 @@ metadata:
 spec:
   completions: 3 # the number of pods to be created
   parallelism: 3 # number of pods to be created at the same time
+  backoffLimit: 10 # the job does not quit before it succeeds.
   template:
     spec:
       containers:
