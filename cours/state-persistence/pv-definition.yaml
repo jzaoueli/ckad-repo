@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vp-vo11
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  hostPath:
+    path: /tmp/data
+  # Retain is the default value of persistentVolumeReclaimPolicy
+  persistentVolumeReclaimPolicy: Retain

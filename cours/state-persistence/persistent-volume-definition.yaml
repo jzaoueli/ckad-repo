@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vp-vo11
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  # awsElasticBlockStore works only with AWS Elastic Block Store.
+  awsElasticBlockStore:
+    volumeID: <volume-id>
+    fsType: ext4
+  # hostPath works only with single node solution
+  hostPath:
+    path: /tmp/data
