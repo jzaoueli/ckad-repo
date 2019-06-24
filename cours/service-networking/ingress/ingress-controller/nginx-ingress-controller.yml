@@ -1,0 +1,46 @@
+apiVersion: extensions/v1beta1
+kind: Deployment # why not kind: Ingress?
+metadata:
+  name: nginx-ingress-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: nginx-ingress
+  template:
+    metadata:
+      labels:
+        name: nginx-ingress
+    spec:
+      containers:
+        - name: nginx-ingress-controller
+          image: quay.io/kubernetes-ingress- controller/nginx-ingress-controller:0.21.0
+          args:
+            # pass that as the command to start the nginx-service
+            - /nginx-ingress-controller
+            # to decouple these configuration data from the nginx-controller image, ConfigMap object need not have any entries at this point
+            - --configmap=$(POD_NAMESPACE)/nginx-configuration
+          # pass in two environment variables that carry the POD’s name and namespace it is deployed to
+          # The nginx service requires these to read the configuration data from within the POD.
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAME_SPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadate.namespace
+          # the ports used by the ingress controller.
+          ports:
+            - containerPort: 80
+              name: http
+            - containerPort: 443
+              name: https
+
+# we must create a ConfigMap (ConfigMap.yaml) object and pass that in "args"
+
+# we need a service (nginx-ingress-service) to expose the ingress controller to the external world
+
+# we need service-account with the right set of permission for ingress-controller to:
+# -> monitor the cluster for ingress resources or configure the underlying nginx-server when something is changed
