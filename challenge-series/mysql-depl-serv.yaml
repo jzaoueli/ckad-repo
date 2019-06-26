@@ -2,36 +2,52 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
+  labels:
+    app: wp
+    env: dev
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: wordpress-app
-      tier: mysql
-  strategy:
-    type: RollingUpdate
+      name: mysql
+      app: wp
   template:
     metadata:
       labels:
-        app: wordpress-app
-        tier: mysql
+        name: mysql
+        app: wp
+        env: dev
     spec:
       containers:
-        - name: mysql-comtainer
+        - name: mysql-container
           image: mysql:5.7
+          ports:
+            - containerPort: 3306
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mysql-pass
                   key: password
-          ports:
-            - containerPort: 3306
-              name: mysql
           volumeMounts:
-            - name: mysql-persistent-storage
-              mountPath: "/var/lib/mysql"
+            - mountPath: /var/lib/mysql
+              name: mysql-persistent-storage
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
             claimName: mysql-persistent-storage
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress-mysql
+spec:
+  type: ClusterIP
+  selector:
+    name: mysql
+    app: wp
+  ports:
+    - protocol: TCP
+      port: 3306

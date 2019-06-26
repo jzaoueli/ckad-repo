@@ -2,38 +2,55 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wordpress
+  labels:
+    app: wp
+    env: dev
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: wordpress-app
-      tier: frontend
-  strategy:
-    type: RollingUpdate
+      name: wordpress
+      app: wp
   template:
     metadata:
       labels:
-        app: wordpress-app
-        tier: frontend
+        name: wordpress
+        app: wp
+        env: dev
     spec:
       containers:
         - name: wordpress-container
           image: wordpress
+          ports:
+            - containerPort: 31004
           env:
-            - name: WORDPRESS_DB_HOST
-              value: wordpress-mysql
+            - name : WORDPRESS_DB_HOST
+              value : wordpress-mysql
             - name: WORDPRESS_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mysql-pass
                   key: password
-          ports:
-            - containerPort: 80
-              name: wordpress
           volumeMounts:
-            - name: wordpress-persistent-storage
-              mountPath: "/var/www/html"
+            - mountPath: /var/www/html
+              name: wordpress-persistent-storage
       volumes:
         - name: wordpress-persistent-storage
           persistentVolumeClaim:
             claimName: wordpress-persistent-storage
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress
+spec:
+  type: NodePort
+  selector:
+    name: wordpress
+    app: wp
+  ports:
+    - protocol: TCP
+      port: 80
+      nodePort: 31004
