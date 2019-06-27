@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: question-four-pod
+  namespace: ggckad-s5
+spec:
+  containers:
+    - name: webapp-container
+      image: kubegoldenguide/question-thirteen
+      readinessProbe:
+        initialDelaySeconds: 60
+        periodSeconds: 10
+        failureThreshold: 5
+        httpGet:
+          port: 8000
+          path: /health
+      livenessProbe:
+        initialDelaySeconds: 1000
+        periodSeconds: 30
+        failureThreshold: 2
+        httpGet:
+          port: 8000
+          path: /health
