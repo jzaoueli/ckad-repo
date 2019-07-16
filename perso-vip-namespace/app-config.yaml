@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: vip
+  labels:
+    app: vip
+    env: dev
+data:
+  DB_HOST: localhost:3306
+  connection_string: localhost:4096
+  external_url: my-ext-url.com
+
